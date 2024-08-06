@@ -1,0 +1,6 @@
+work_dir: ~/workspace
+
+repositories:
+  - aaaa/xxxx
+  - bbbb/yyyy
+  - cccc/zzzz
