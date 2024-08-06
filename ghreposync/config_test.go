@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	ghreposync "github.com/sivchari/gh-repo-sync"
+	"github.com/sivchari/gh-repo-sync/ghreposync"
 )
 
 //go:embed testdata/gh-repo-sync.yaml
