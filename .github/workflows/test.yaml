@@ -9,10 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: install Go
-        run: |
-          sudo apt install -y golang-go
-
       - uses: actions/setup-go@v5
         with:
           go-version-file: 'go.mod'
@@ -29,4 +25,4 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: run test
-        run: /usr/local/go/bin/go test -race -shuffle=on ./...
+        run: go test -race -shuffle=on ./...
