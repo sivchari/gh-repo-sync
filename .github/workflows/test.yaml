@@ -9,15 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: install Go
-        run: |
-          sudo apt install -y golang-go
-
-      # - uses: actions/setup-go@v5
-      #   with:
-      #     go-version-file: 'go.mod'
-      #     check-latest: false
-      #     cache: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          check-latest: false
+          cache: false
 
       - uses: actions/cache@v3
         with:
@@ -28,10 +24,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: install Go1.23
-        run: |
-          wget -c https://go.dev/dl/go1.23rc2.linux-amd64.tar.gz
-          sudo tar -C /usr/local/ -xzf go1.23rc2.linux-amd64.tar.gz
-
       - name: run test
-        run: /usr/local/go/bin/go test -race -shuffle=on ./...
+        run: go test -race -shuffle=on ./...
