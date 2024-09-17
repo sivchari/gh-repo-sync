@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -15,6 +16,10 @@ import (
 	"github.com/spf13/pflag"
 	"golang.org/x/sync/errgroup"
 )
+
+func init() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+}
 
 func main() {
 	_main()
@@ -71,8 +76,8 @@ Examples:
 		eg.Go(func() error {
 			splits := strings.Split(repo, "/")
 			repoName := splits[len(splits)-1]
-			fmt.Println("repoName", repoName)
-			return run(egctx, cfg.WorkDir, me, repoName)
+			slog.Info("Start to sync the repository", slog.String("name", repo))
+			return run(egctx, me, repoName)
 		})
 	}
 
@@ -83,9 +88,9 @@ Examples:
 	return
 }
 
-func run(ctx context.Context, wd, username, repo string) error {
-	entry := "cd %s && gh repo sync %s/%s"
-	cmd := exec.CommandContext(ctx, "sh", "-c", fmt.Sprintf(entry, wd, username, repo))
+func run(ctx context.Context, username, repo string) error {
+	entry := "gh repo sync %s/%s"
+	cmd := exec.CommandContext(ctx, "sh", "-c", fmt.Sprintf(entry, username, repo))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Cancel = func() error {
