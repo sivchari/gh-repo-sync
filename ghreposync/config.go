@@ -22,10 +22,14 @@ func Unmarshal(data []byte) (*Config, error) {
 	return c, nil
 }
 
-func Filter(work_dir string, repos []string) iter.Seq[string] {
+func Filter(workDir string, repos []string) iter.Seq[string] {
+	if workDir == "" {
+		wd, _ := os.Getwd()
+		workDir = wd
+	}
 	return func(yield func(string) bool) {
 		for _, repo := range repos {
-			p := path.Join(work_dir, "/", repo)
+			p := path.Join(workDir, "/", repo)
 			stat, err := os.Stat(p)
 			if err != nil || !stat.IsDir() {
 				log.Println("Error reading file:", err)
