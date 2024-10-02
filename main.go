@@ -34,12 +34,12 @@ func _main() {
 	pflag.Usage = func() {
 		fmt.Printf(`
 Usage:
-  gh-repo-sync [flags]
+  gh repo-sync [flags]
 
 Flags:
 %s
 Examples:
-  gh-repo-sync -f gh-repo-sync.yaml
+  gh repo-sync -f gh-repo-sync.yaml
 `, pflag.CommandLine.FlagUsages())
 	}
 	pflag.Parse()
