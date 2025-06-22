@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"log/slog"
 	"os"
@@ -91,8 +92,8 @@ Examples:
 func run(ctx context.Context, username, repo string) error {
 	entry := "gh repo sync %s/%s"
 	cmd := exec.CommandContext(ctx, "sh", "-c", fmt.Sprintf(entry, username, repo))
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = io.Discard
+	cmd.Stderr = io.Discard
 	cmd.Cancel = func() error {
 		return cmd.Process.Signal(os.Interrupt)
 	}
