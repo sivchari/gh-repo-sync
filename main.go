@@ -78,15 +78,18 @@ Examples:
 			splits := strings.Split(repo, "/")
 			repoName := splits[len(splits)-1]
 			slog.Info("Start to sync the repository", slog.String("name", repo))
-			return run(egctx, me, repoName)
+			if err := run(egctx, me, repoName); err != nil {
+				slog.Error("Failed to sync the repository", slog.String("name", repo), slog.String("error", err.Error()))
+				return err
+			}
+			slog.Info("Successfully synced the repository", slog.String("name", repo))
+			return nil
 		})
 	}
 
 	if err := eg.Wait(); err != nil {
 		log.Fatal("Error syncing repos:", err)
 	}
-
-	return
 }
 
 func run(ctx context.Context, username, repo string) error {
@@ -94,6 +97,7 @@ func run(ctx context.Context, username, repo string) error {
 	cmd := exec.CommandContext(ctx, "sh", "-c", fmt.Sprintf(entry, username, repo))
 	cmd.Stdout = io.Discard
 	cmd.Stderr = io.Discard
+	cmd.Env = append(os.Environ(), "GH_NO_PROMPT=1")
 	cmd.Cancel = func() error {
 		return cmd.Process.Signal(os.Interrupt)
 	}
